@@ -1,7 +1,12 @@
 #include <iostream>
 #include <pthread.h>
 #include <unistd.h>
+#include <climits>
 using namespace std;
+
+ int maxValue = 0;
+ int minValue = 0;
+ double avg = 0;
 
 struct Array {
   int n = 0;
@@ -20,33 +25,34 @@ struct Array {
 
 void *trungBinhCong(void *arr) {
     Array *arr1 = (Array *)arr;
-    double avg = 0;
+    double avgTmp = 0;
     for(int i = 0; i < arr1->n; i++) {
-            avg += arr1->arr[i];
+            avgTmp += arr1->arr[i];
     }
-    avg /= arr1->n;
-    cout << "Trung binh cong la: " << avg << endl;
+    avgTmp /= arr1->n;
+    avg = avgTmp;
 }
 void *findMax(void *arr) {
     Array *arr1 = (Array *)arr;
-    int max = arr1->arr[0];
+    int maxTmp = arr1->arr[0];
     for(int i = 0; i < arr1->n; i++) {
-            if (max < arr1->arr[i]) {
-                max = arr1->arr[i];
-            }
+        if (maxTmp < arr1->arr[i]) {
+            maxTmp = arr1->arr[i];
+        }
     }
-    cout << "Gia tri lon nhat la: " << max << endl;
+    maxValue = maxTmp;
+    
 }
 
 void *findMin(void *arr) {
     Array *arr1 = (Array *)arr;
-    int min = arr1->arr[0];
+    int minTmp = arr1->arr[0];
     for(int i = 0; i < arr1->n; i++) {
-            if (min > arr1->arr[i]) {
-                min = arr1->arr[i];
-            }
+        if (minTmp > arr1->arr[i]) {
+            minTmp = arr1->arr[i];
+        }
     }
-    cout << "Gia tri nho nhat la: " << min << endl;
+    minValue = minTmp;
 }
 
 int main(int argc, char* argv[]) {
@@ -60,8 +66,13 @@ int main(int argc, char* argv[]) {
         pthread_create(&tid, NULL, findMax, &arr);
         if (pthread_join(tid, (void**) pstatus) == 0) {
             pthread_create(&tid, NULL, findMin, &arr);
-            sleep(2);
+            if (pthread_join(tid, (void**) pstatus) == 0) {
+                cout << "Gia tri trung binh: " << avg << endl;
+                cout << "Gia tri lon nhat: " << maxValue << endl;
+                cout << "Gia tri nho nhat: " << minValue << endl;
+            }
         }
+        
     }
     return 0;
 }
