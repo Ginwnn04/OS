@@ -60,9 +60,6 @@ int main(int argc, char* argv[]) {
             read(readfd, &n1, sizeof(int));
             read(readfd, &n2, sizeof(int));
             read(readfd, &op, sizeof(char));
-            cout << "n1 = " << n1 << endl;
-            cout << "n2 = " << n2 << endl;
-            cout << "op = " << op << endl;
             float result = tinhToan(n1, n2, op);
             write(writefd, &result, sizeof(float));
             close(readfd);
